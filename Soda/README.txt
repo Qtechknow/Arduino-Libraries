@@ -1,0 +1,1 @@
+This library was made by Quin, the head engineer at Qtechknow.  I made this specifically for using with 7-segment displays.  Share, distribute, and edit for your specific uses.  This is an open-source library.
