@@ -1,0 +1,9 @@
+Pineapple	KEYWORD1
+registerPins	KEYWORD2
+segmentPins	KEYWORD2
+write	KEYWORD2
+clear	KEYWORD2
+setAll	KEYWORD2
+setPin	KEYWORD2
+update	KEYWORD2
+flicker	KEYWORD2
