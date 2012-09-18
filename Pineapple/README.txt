@@ -26,3 +26,5 @@ pineapple.flicker()
 
 pineapple.write(int number)
 	Displays int number.  Can be used in for loops, so no more repetition.  
+pineapple.setDecimalPoint(int digit, boolean decimalState)
+	Put in which digit's decimal point you want to control (int digit), and put in what state you want the decimal point to be in (boolean decimalState).  You may put in either "HIGH" or "LOW" for the decimalState variable.
