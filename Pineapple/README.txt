@@ -18,7 +18,7 @@ pineapple.setAll(boolean value)
 pineapple.clear()
 	Clears the display.
 
-pineapple.segmentPins(int a, int b, int c, int d, int e, int f, int g, int dp, boolean  	common)
+pineapple.segmentPins(int a, int b, int c, int d, int e, int f, int g, int dp, boolean common)
 		Declares the segment pins and the common anode or the common cathode.  Set the boolean common HIGH for a common anode display and LOW for a common cathode display.  For the segment pin numbers, set to 0 - 7 for the first shift register, 8-15 for the next, and so on.
 
 pineapple.flicker()
@@ -26,5 +26,6 @@ pineapple.flicker()
 
 pineapple.write(int number)
 	Displays int number.  Can be used in for loops, so no more repetition.  
+
 pineapple.setDecimalPoint(int digit, boolean decimalState)
 	Put in which digit's decimal point you want to control (int digit), and put in what state you want the decimal point to be in (boolean decimalState).  You may put in either "HIGH" or "LOW" for the decimalState variable.
