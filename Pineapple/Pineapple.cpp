@@ -1,10 +1,10 @@
-#if ARDUINO >= 100
- #include "Arduino.h"
-#else
- #include "WProgram.h"
-#endif
-
 #include "Pineapple.h"
+
+#if ARDUINO >= 100     // Arduino 1.0 and 0023 compatible!
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
 uint8_t Pineapple::registerPins(int SER_Pin, int RCLK_Pin, int SRCLK_Pin, int Number_of_Registers) {
     _SER_Pin = SER_Pin;
@@ -18,7 +18,7 @@ uint8_t Pineapple::registerPins(int SER_Pin, int RCLK_Pin, int SRCLK_Pin, int Nu
 	pinMode(_SRCLK_Pin, OUTPUT);
 	
 	clear(); //reset all register pins
-	update();    
+	update();
 }
 
 void Pineapple::update(){
@@ -33,7 +33,7 @@ void Pineapple::update(){
         //iterate through the bits in each registers
         for(int j = 8 - 1; j >=  0; j--){
             
-            digitalWrite(_SRCLK_Pin, LOW);   
+            digitalWrite(_SRCLK_Pin, LOW);
             
             int val = _shiftRegisters[i] & (1 << j);
             
@@ -57,18 +57,17 @@ void Pineapple::setPin(int index, boolean val){
 	current |= val << bitIndex; //set the bit
 	
 	_shiftRegisters[byteIndex] = current; //set the value
-    update();
 }
 
 void Pineapple::setAll(boolean val){
-    //set all register pins to LOW  
+    //set all register pins to LOW
     for(int i = _Number_of_Registers * 8 - 1; i >=  0; i--){
         setPin(i, val);
     }
 }
 
 void Pineapple::clear(){
-    //set all register pins to LOW  
+    //set all register pins to LOW
     for(int i = _Number_of_Registers * 8 - 1; i >=  0; i--){
         setPin(i, _common);
     }
@@ -86,21 +85,28 @@ uint8_t Pineapple::segmentPins(int a, int b, int c, int d, int e, int f, int g, 
     _dp=dp;
     _common=common;
     
-    segmentpins[0] = _dp;
-    segmentpins[1] = _g;
-    segmentpins[2] = _f;
-    segmentpins[3] = _e;
-    segmentpins[4] = _d;
-    segmentpins[5] = _c;
-    segmentpins[6] = _b;
-    segmentpins[7] = _a;
+    segmentpinsb[0] = _dp;
+    segmentpinsb[1] = _g;
+    segmentpinsb[2] = _f;
+    segmentpinsb[3] = _e;
+    segmentpinsb[4] = _d;
+    segmentpinsb[5] = _c;
+    segmentpinsb[6] = _b;
+    segmentpinsb[7] = _a;
     
     for(int i=0; i < 8; i++) {
         
-        pinMode(segmentpins[i], OUTPUT);
+        pinMode(segmentpinsb[i], OUTPUT);
     }
     
-    
+    if (_common == HIGH) {
+        setPin(_dp, HIGH);
+        update();
+    }
+    if (_common == LOW) {
+        setPin(_dp, LOW);
+        update();
+    }
 }
 
 void Pineapple::flicker() {
@@ -109,21 +115,21 @@ void Pineapple::flicker() {
     delay(50);
     write(4);
     delay(50);
-    write(9);
+    write(6);
     delay(50);
     write(1);
     delay(50);
     write(6);
     delay(50);
-    write(9);
+    write(1);
     delay(50);
     write(3);
     delay(50);
     write(4);
     delay(100);
-    write(7);
+    write(1);
     delay(100);
-    write(9);
+    write(0);
     delay(100);
     write(3);
     delay(100);
@@ -140,6 +146,8 @@ void Pineapple::flicker() {
 }
 
 void Pineapple::write(int number) {
+    _number=number;
+    
     boolean isBitSet;
     // G, F, E, D, C, B, A, DP
     numeral[0] = B11111100;  // 0
@@ -163,7 +171,6 @@ void Pineapple::write(int number) {
             }
             isBitSet = ! isBitSet;
             setPin(segmentpins[segment], isBitSet);
-            update();
         }
     }else{
         for(int segment=1; segment < 8; segment++) {
@@ -173,23 +180,72 @@ void Pineapple::write(int number) {
                 isBitSet = bitRead(numeral[number], segment);
             }
             setPin(segmentpins[segment], isBitSet);
+        }
+    }
+}
+
+void Pineapple::setDecimalPoint(int digit, boolean decimalState) {
+    
+    _digit=digit;
+    _decimalState=decimalState;
+    
+    if(_digit == 1) {
+        
+        if (_decimalState == HIGH && _common == HIGH) {
+            setPin(_dp, LOW);
+            update();
+        }
+        if (_decimalState == HIGH && _common == LOW) {
+            setPin(_dp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == HIGH) {
+            setPin(_dp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == LOW) {
+            setPin(_dp, LOW);
             update();
         }
     }
-    if (_number == '.' && _common == HIGH) {
-        setPin(_dp, LOW);
-        update();
+    
+    if(_digit == 2) {
+        
+        if (_decimalState == HIGH && _common == HIGH) {
+            setPin(_ddp, LOW);
+            update();
+        }
+        if (_decimalState == HIGH && _common == LOW) {
+            setPin(_ddp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == HIGH) {
+            setPin(_ddp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == LOW) {
+            setPin(_ddp, LOW);
+            update();
+        }
     }
-    if (_number == '.' && _common == LOW) {
-        setPin(_dp, HIGH);
-        update();
-    }
-    if (_common == HIGH) {
-        setPin(_dp, HIGH);
-        update();
-    }
-    if (_common == LOW) {
-        setPin(_dp, LOW);
-        update();
+    
+    if(_digit == 3) {
+        
+        if (_decimalState == HIGH && _common == HIGH) {
+            setPin(_dddp, LOW);
+            update();
+        }
+        if (_decimalState == HIGH && _common == LOW) {
+            setPin(_dddp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == HIGH) {
+            setPin(_dddp, HIGH);
+            update();
+        }
+        if (_decimalState == LOW && _common == LOW) {
+            setPin(_dddp, LOW);
+            update();
+        }
     }
 }
