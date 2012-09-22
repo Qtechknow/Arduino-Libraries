@@ -1,3 +1,4 @@
 Soda  KEYWORD1
-pins  KEYWORD2
-write KEYWORD2
+pins	KEYWORD2
+write	KEYWORD2
+setDecimalState		KEYWORD2
