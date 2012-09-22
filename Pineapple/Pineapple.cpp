@@ -208,44 +208,4 @@ void Pineapple::setDecimalPoint(int digit, boolean decimalState) {
             update();
         }
     }
-    
-    if(_digit == 2) {
-        
-        if (_decimalState == HIGH && _common == HIGH) {
-            setPin(_ddp, LOW);
-            update();
-        }
-        if (_decimalState == HIGH && _common == LOW) {
-            setPin(_ddp, HIGH);
-            update();
-        }
-        if (_decimalState == LOW && _common == HIGH) {
-            setPin(_ddp, HIGH);
-            update();
-        }
-        if (_decimalState == LOW && _common == LOW) {
-            setPin(_ddp, LOW);
-            update();
-        }
-    }
-    
-    if(_digit == 3) {
-        
-        if (_decimalState == HIGH && _common == HIGH) {
-            setPin(_dddp, LOW);
-            update();
-        }
-        if (_decimalState == HIGH && _common == LOW) {
-            setPin(_dddp, HIGH);
-            update();
-        }
-        if (_decimalState == LOW && _common == HIGH) {
-            setPin(_dddp, HIGH);
-            update();
-        }
-        if (_decimalState == LOW && _common == LOW) {
-            setPin(_dddp, LOW);
-            update();
-        }
-    }
 }
