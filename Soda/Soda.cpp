@@ -1,7 +1,34 @@
 #include "Arduino.h"
 #include "Soda.h"
 
-void Soda.pins(int a, int b, int c, int d, int e, int f, int g, int dp) {
+void Soda::pins(int a, int b, int c, int d, int e, int f, int g, int dp, boolean common) {
+    
+    _a=a;
+    _b=b;
+    _c=c;
+    _d=d;
+    _e=e;
+    _f=f;
+    _g=g;
+    _dp=dp;
+    _common=common;
+    
+    segmentPins[0] = _dp;
+    segmentPins[1] = _g;
+    segmentPins[2] = _f;
+    segmentPins[3] = _e;
+    segmentPins[4] = _d;
+    segmentPins[5] = _c;
+    segmentPins[6] = _b;
+    segmentPins[7] = _a;
+    
+    for(int i=0; i < 8; i++) {
+        
+        pinMode(segmentPins[i], OUTPUT);
+    }
+}
+
+void Soda::write(int number) {
     
     const byte numeral[10] = {
         B11111100,  // 0
@@ -16,19 +43,6 @@ void Soda.pins(int a, int b, int c, int d, int e, int f, int g, int dp) {
         B11100110,
     };
     
-    const int segmentPins[8] = { dp, g, f, e, d, c, b, a };
-    
-}
-
-void Soda.setup()  {
-    
-    for(int i=0; i < 8; i++) {
-        
-        pinMode(segmentPins[i], OUTPUT);
-    }
-}
-
-void Soda.write(int number) {
     boolean isBitSet;
     
     for(int segment=1; segment < 8; segment++) {
@@ -40,5 +54,27 @@ void Soda.write(int number) {
         }
         isBitSet = ! isBitSet;
         digitalWrite(segmentPins[segment], isBitSet);
+    }
+}
+
+void Soda::setDecimalPoint(int digit, boolean decimalState) {
+    
+    _digit=digit;
+    _decimalState=decimalState;
+
+    if(_digit == 1) {
+        
+        if (_decimalState == HIGH && _common == HIGH) {
+            write(_dp, LOW);
+        }
+        if (_decimalState == HIGH && _common == LOW) {
+            write(_dp, HIGH);
+        }
+        if (_decimalState == LOW && _common == HIGH) {
+            write(_dp, HIGH);
+        }
+        if (_decimalState == LOW && _common == LOW) {
+            write(_dp, LOW);
+        }  
     }
 }
